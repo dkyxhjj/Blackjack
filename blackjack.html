@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="style.css">
+        <script src="index.js"></script>
+    </head>
+    <body>
+        <div class="game-container">
+            
+            
+            <h1>Blackjack</h1>
+            <p id="message-el">Want to start the game?</p>
+            
+            <p id="cards-el">Cards:</p>
+            <p id="sum-el">Player Sum:</p>
+            
+            <p id="dealer-el">Dealer's cards:</p>
+            <p id="dealer-sum-el">Dealer's Sum:</p>
+            
+            <div id="buttons"> 
+                <button type="button" onclick="startGame()">DEAL</button> 
+                <button type="button" onclick="stand()">STAND</button> 
+                <button type="button" onclick="hit()">HIT</button> 
+                <button type="button" onclick="resetGame()">RESET</button>
+            </div>
+        </div>
+        <div id="win-tally">
+            <p>Player Wins: <span id="player-wins">0</span></p>
+            <p>Dealer Wins: <span id="dealer-wins">0</span></p>
+            <button type="button" onclick="resetScore()">RESET-SCORE</button>
+        </div>
+        <button id="back-btn" onclick="window.location.href='index.html'">Back to Main Menu</button>
+    </body>
+</html>

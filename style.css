@@ -1,0 +1,173 @@
+body {
+    font-family: 'Courier New', Courier, monospace;
+    background-color: #f0f4f8;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    margin: 0;
+    overflow-x: hidden;
+    background: linear-gradient(135deg, #e6f2ff 0%, #b3d9ff 100%);
+    position: relative;
+}
+
+h1 {
+    text-align: center;
+    color: rgba(0,0,0,0.8);
+    font-size: 48px;
+    margin-bottom: 30px;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+p {
+    text-align: center;
+    color: rgba(0,0,0,0.7);
+    font-size: 24px;
+    margin: 10px 0;
+}
+
+#message-el {
+    font-weight: bold;
+    color: rgba(0,0,0,0.8);
+}
+
+.game-container {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    padding: 30px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    max-width: 600px;
+    width: 90%;
+    text-align: center;
+    position: relative;
+    margin: 0 auto;
+    margin-top: 100px;
+}
+
+#cards-el, #sum-el, #dealer-el, #dealer-sum-el {
+    display: inline-block;
+    margin: 10px;
+    padding: 10px 15px;
+    background-color: rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+    backdrop-filter: blur(5px);
+}
+
+#buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+#buttons button, #start-btn, #back-btn {
+    background-color: transparent;
+    border: 2px solid rgba(0,0,0,0.6);
+    color: rgba(0,0,0,0.8);
+    padding: 10px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 18px;
+}
+
+#buttons button:hover, #start-btn:hover, #back-btn:hover {
+    background-color: rgba(0,0,0,0.05);
+    transform: scale(1.05);
+}
+
+#win-tally {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    padding: 10px 15px;
+    backdrop-filter: blur(5px);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    z-index: 20;
+}
+
+#win-tally p {
+    margin: 0 10px;
+    font-size: 18px;
+    color: rgba(0,0,0,0.7);
+    display: flex;
+    align-items: center;
+}
+
+#win-tally span {
+    font-weight: bold;
+    margin-left: 10px;
+    background-color: rgba(0,0,0,0.1);
+    padding: 5px 10px;
+    border-radius: 5px;
+    min-width: 30px;
+    text-align: center;
+}
+
+#win-tally button {
+    background-color: transparent;
+    border: 2px solid rgba(0,0,0,0.6);
+    color: rgba(0,0,0,0.8);
+    padding: 5px 10px;
+    border-radius: 5px;
+    margin-left: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+#win-tally button:hover {
+    background-color: rgba(0,0,0,0.05);
+}
+
+#back-btn {
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin: 10 20 20 0;
+    padding: 10px 20px;
+    border-radius: 0 0 10px 0;
+    z-index: 20;
+}
+
+.title-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    text-align: center;
+    background: linear-gradient(135deg, #e6f2ff 0%, #b3d9ff 100%);
+    padding: 0 20px;
+}
+
+.title-container h1 {
+    font-size: 72px;
+    font-weight: bold;
+    color: rgba(0,0,0,0.8);
+    margin-bottom: 20px;
+    letter-spacing: 5px;
+    text-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.subtitle {
+    font-size: 24px;
+    color: rgba(0,0,0,0.6);
+    margin-bottom: 40px;
+    letter-spacing: 3px;
+}
+
+#start-btn {
+    width: 300px;
+    height: 80px;
+    font-size: 36px;
+    letter-spacing: 3px;
+    border-radius: 15px;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+}
