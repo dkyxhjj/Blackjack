@@ -1,52 +1,81 @@
+// Global variables to track game state and UI elements
 let message = "";
-let firstCard, secondCard, sum, hasBlackJack, isAlive;
-let cardsEl, sumEl, messageEl, dealerEl, dealerSum,dealerSumEl;
-let playerWins = 0;
-let dealerWins = 0;
+let cards = [], dealerCards = [];
+let sum = 0, dealerSum = 0, hasBlackJack = false, isAlive = false;
+let cardsEl, sumEl, messageEl, dealerEl, dealerSumEl;
+let playerWins = 0, dealerWins = 0;
+let cardCounter = 2, dealerCounter = 2;
 
+// Convert card number to display symbol (J, Q, K, A)
 function getCardDisplay(card) {
     switch(card) {
-        case 11:
-            return "J";
-        case 12:
-            return "Q";
-        case 13:
-            return "K";
-        default:
-            return card;
+        case 11: return "J";
+        case 12: return "Q";
+        case 13: return "K";
+        case 1: return "A";
+        default: return card;
     }
 }
 
+// Calculate optimal value for an Ace based on current sum
+function getAceValue(currentSum) {
+    return (currentSum + 11 <= 21) ? 11 : 1;
+}
+
+// Calculate total sum of cards, handling Aces dynamically
+function calculateSum(cardsArray) {
+    let sum = 0;
+    let aces = 0;
+
+    // First sum non-Ace cards
+    for (let card of cardsArray) {
+        if (card === 1) {
+            aces++;
+        } else if (card >= 10) {
+            sum += 10;
+        } else {
+            sum += card;
+        }
+    }
+
+    // Add Aces with optimal values
+    for (let i = 0; i < aces; i++) {
+        sum += getAceValue(sum);
+    }
+
+    return sum;
+}
+
+// Initialize the game, deal initial cards
 function startGame() {
-    firstCard = Math.floor(Math.random() * 13) + 1;
-    secondCard = Math.floor(Math.random() * 13) + 1;
-    let dealerCard = Math.floor(Math.random() * 13) + 1;
+    // Reset game arrays and counters
+    cards = [];
+    dealerCards = [];
+    cardCounter = 2;
+    dealerCounter = 2;
+
+    // Generate random initial cards for player and dealer
+    cards[0] = Math.floor(Math.random() * 13) + 1;
+    cards[1] = Math.floor(Math.random() * 13) + 1;
+    dealerCards[0] = Math.floor(Math.random() * 13) + 1;
+
+    // Reset game state
     hasBlackJack = false;
     isAlive = true;
     
-    // Get DOM elements
+    // Get references to UI elements
     cardsEl = document.getElementById("cards-el");
     sumEl = document.getElementById("sum-el");
     messageEl = document.getElementById("message-el");
     dealerEl = document.getElementById("dealer-el");
     dealerSumEl = document.getElementById("dealer-sum-el");
 
-    // Display cards with face card symbols
-    cardsEl.textContent = "Cards: " + getCardDisplay(firstCard) + " " + getCardDisplay(secondCard) + " ";
-    dealerEl.textContent = "Dealer's cards: " + getCardDisplay(dealerCard);
 
-    // Calculate sum using 10 for face cards
-    if (firstCard >= 10){
-        firstCard = 10;
-    }
-    if (secondCard >= 10){
-        secondCard = 10;
-    }
-    if (dealerCard >= 10){
-        dealerCard = 10;
-    }
-    dealerSum = dealerCard;
-    sum = firstCard + secondCard;
+    cardsEl.textContent = "Cards: " + getCardDisplay(cards[0]) + " " + getCardDisplay(cards[1]) + " ";
+    dealerEl.textContent = "Dealer's cards: " + getCardDisplay(dealerCards[0]) + " ";
+    sum = calculateSum(cards);
+    dealerSum = calculateSum(dealerCards);
+    
     sumEl.textContent = "Sum: " + sum;
     dealerSumEl.textContent = "Dealer's Sum: " + dealerSum;
 
@@ -55,25 +84,28 @@ function startGame() {
     } else if (sum === 21) {
         message = "You've got Blackjack!";
         hasBlackJack = true;
+        updateWinTally('player');
     }
         
     messageEl.textContent = message;
 }
 
+// Dealer's turn to draw cards
 function stand() {
     dealerEl = document.getElementById("dealer-el");
     dealerSumEl = document.getElementById("dealer-sum-el");
 
     if (!isAlive || hasBlackJack)
         return;
+
+    // Dealer draws cards until sum is 17 or higher
     while (dealerSum < 17) {
         let newCard = Math.floor(Math.random() * 13) + 1;
+        dealerCards.push(newCard);
         dealerEl.textContent += " " + getCardDisplay(newCard);
         
-        if (newCard >= 10){
-            newCard = 10;
-        }
-        dealerSum += newCard;
+        dealerSum = calculateSum(dealerCards);
+        dealerCounter++;
     } 
 
     dealerSumEl.textContent = "Dealer's Sum: " + dealerSum;
@@ -94,20 +126,22 @@ function stand() {
     messageEl.textContent = message;
 }
 
+// Player draws an additional card
 function hit(){
+    // Only draw if game is active
     if (!isAlive || hasBlackJack) 
         return;
 
+    // Draw a new random card
     let newCard = Math.floor(Math.random() * 13) + 1;
+    cards.push(newCard);
     cardsEl.textContent += " " + getCardDisplay(newCard);
     
-    if (newCard >= 10){
-        newCard = 10;
-    }
-    
-    sum += newCard;
+    // Calculate new sum with dynamic Ace handling
+    sum = calculateSum(cards);
     sumEl.textContent = "Sum: " + sum;
 
+    // Check if player busts
     if (sum <= 21) {
         message = "Hit or Stand";
     } else {
@@ -116,8 +150,10 @@ function hit(){
         isAlive = false;
     }
     messageEl.textContent = message;
+    cardCounter++;
 }
 
+// Update win tally for player or dealer
 function updateWinTally(winner) {
     let playerWinsEl = document.getElementById("player-wins");
     let dealerWinsEl = document.getElementById("dealer-wins");
@@ -132,15 +168,14 @@ function updateWinTally(winner) {
 }
 
 function resetGame() {
-    // Reset game state
-    firstCard = null;
-    secondCard = null;
+    cards = [];
+    dealerCards = [];
     sum = 0;
+    dealerSum = 0;
     hasBlackJack = false;
     isAlive = false;
     message = "";
 
-    // Reset UI elements
     cardsEl.textContent = "Cards:";
     sumEl.textContent = "Player Sum:";
     dealerEl.textContent = "Dealer's cards:";
@@ -151,6 +186,8 @@ function resetGame() {
 function resetScore(){
     playerWins = 0;
     dealerWins = 0;
+    let playerWinsEl = document.getElementById("player-wins");
+    let dealerWinsEl = document.getElementById("dealer-wins");
     playerWinsEl.textContent = playerWins;
     dealerWinsEl.textContent = dealerWins;
 }
