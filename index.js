@@ -10,20 +10,31 @@ const getCardDisplay = card => {
     return displayMap[card] || card;
 };
 
-const getAceValue = currentSum => currentSum + 11 <= 21 ? 11 : 1;
+const getCardValue = card => {
+    if (card === 1) return 11;  // Ace initially counts as 11
+    return card >= 10 ? 10 : card;  // Face cards count as 10
+};
 
 const calculateSum = cardsArray => {
-    let sum = 0, aces = 0;
+    let sum = 0;
+    let aces = 0;
     
-    // Sum non-Ace cards first
+    // First pass: count aces and sum other cards
     cardsArray.forEach(card => {
-        if (card === 1) aces++;
-        else sum += card >= 10 ? 10 : card;
+        if (card === 1) {
+            aces++;
+        } else {
+            sum += getCardValue(card);
+        }
     });
 
-    // Add Aces with optimal values
+    // Second pass: add aces
     for (let i = 0; i < aces; i++) {
-        sum += getAceValue(sum);
+        if (sum + 11 <= 21) {
+            sum += 11;
+        } else {
+            sum += 1;
+        }
     }
 
     return sum;
