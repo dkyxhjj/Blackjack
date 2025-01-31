@@ -7,8 +7,14 @@
     <body>
         <div class="game-container">
             
-            
             <h1>Blackjack</h1>
+            <p id="money-el">Balance: $100</p>
+            
+            <div class="bet-container">
+                <p id="bet-amount-el">Bet: $10</p>
+                <input type="range" id="bet-slider" min="10" max="100" step="10" value="10" oninput="updateBetDisplay()">
+            </div>
+            
             <p id="message-el">Want to start the game?</p>
             
             <p id="cards-el">Cards:</p>
@@ -23,11 +29,6 @@
                 <button type="button" onclick="hit()">HIT</button> 
                 <button type="button" onclick="resetGame()">RESET</button>
             </div>
-        </div>
-        <div id="win-tally">
-            <p>Player Wins: <span id="player-wins">0</span></p>
-            <p>Dealer Wins: <span id="dealer-wins">0</span></p>
-            <button type="button" onclick="resetScore()">RESET-SCORE</button>
         </div>
         <button id="back-btn" onclick="window.location.href='index.html'">Back to Main Menu</button>
     </body>

@@ -1,8 +1,59 @@
 // Game state and UI tracking
 let [message, cards, dealerCards] = ["", [], []];
-let [sum, dealerSum, playerWins, dealerWins] = [0, 0, 0, 0];
+let [sum, dealerSum] = [0, 0];
 let [hasBlackJack, isAlive] = [false, false];
 let [cardsEl, sumEl, messageEl, dealerEl, dealerSumEl] = [];
+
+// Money management
+let playerMoney = parseInt(localStorage.getItem('playerMoney') || '100');  // Starting balance
+let currentBet = 10;    // Default bet amount
+let minBet = 10;        // Minimum bet
+let maxBet = 100;       // Maximum bet based on starting balance
+
+const updateBetDisplay = () => {
+    const betSlider = document.getElementById("bet-slider");
+    const betAmountEl = document.getElementById("bet-amount-el");
+    currentBet = parseInt(betSlider.value);
+    betAmountEl.textContent = `Bet: $${currentBet}`;
+};
+
+const updateMoneyDisplay = () => {
+    const moneyEl = document.getElementById("money-el");
+    moneyEl.textContent = `Balance: $${playerMoney}`;
+    localStorage.setItem('playerMoney', playerMoney.toString());
+};
+
+const addMoney = (amount) => {
+    playerMoney += amount;
+    updateMoneyDisplay();
+    
+    // Update max bet if player's balance increases
+    maxBet = Math.min(playerMoney, 500);
+    const betSlider = document.getElementById("bet-slider");
+    if (betSlider) {
+        betSlider.max = maxBet;
+    }
+};
+
+const placeBet = (amount) => {
+    if (amount > playerMoney) {
+        messageEl.textContent = "Not enough money to place that bet!";
+        return false;
+    }
+    playerMoney -= amount;
+    updateMoneyDisplay();
+    return true;
+};
+
+const updateUIElements = () => {
+    [cardsEl, sumEl, messageEl, dealerEl, dealerSumEl] = [
+        document.getElementById("cards-el"),
+        document.getElementById("sum-el"),
+        document.getElementById("message-el"),
+        document.getElementById("dealer-el"),
+        document.getElementById("dealer-sum-el")
+    ];
+};
 
 // Utility functions
 const getCardDisplay = card => {
@@ -12,7 +63,7 @@ const getCardDisplay = card => {
 
 const getCardValue = card => {
     if (card === 1) return 11;  // Ace initially counts as 11
-    return card >= 10 ? 10 : card;  // Face cards count as 10
+    return card >= 10 ? 10 : card;
 };
 
 const calculateSum = cardsArray => {
@@ -40,34 +91,15 @@ const calculateSum = cardsArray => {
     return sum;
 };
 
-const updateWinTally = winner => {
-    const playerWinsEl = document.getElementById("player-wins");
-    const dealerWinsEl = document.getElementById("dealer-wins");
-
-    if (winner === 'player') {
-        playerWins++;
-        playerWinsEl.textContent = playerWins;
-    } else if (winner === 'dealer') {
-        dealerWins++;
-        dealerWinsEl.textContent = dealerWins;
-    }
-};
-
-const updateUIElements = () => {
-    [cardsEl, sumEl, messageEl, dealerEl, dealerSumEl] = [
-        document.getElementById("cards-el"),
-        document.getElementById("sum-el"),
-        document.getElementById("message-el"),
-        document.getElementById("dealer-el"),
-        document.getElementById("dealer-sum-el")
-    ];
-};
-
 function startGame() {
+    // Require a minimum bet to start the game
+    if (!placeBet(currentBet)) return;
+
     // Reset game state
     [cards, dealerCards] = [[], []];
     [hasBlackJack, isAlive] = [false, true];
     updateUIElements();
+    updateMoneyDisplay();
 
     // Initial card draw
     cards.push(...[0, 1].map(() => Math.floor(Math.random() * 13) + 1));
@@ -86,7 +118,8 @@ function startGame() {
     message = sum === 21 ? "You've got Blackjack!" : "Hit or Stand";
     if (sum === 21) {
         hasBlackJack = true;
-        updateWinTally('player');
+        playerMoney += Math.floor(currentBet * 2.5);  // Blackjack pays 3:2 (2.5x)
+        updateMoneyDisplay();
     }
     messageEl.textContent = message;
 }
@@ -103,8 +136,12 @@ function hit() {
 
     message = sum <= 21 ? "Hit or Stand" : "You Busted!";
     if (sum > 21) {
-        updateWinTally('dealer');
         isAlive = false;
+        
+        // Check if player is out of money
+        if (playerMoney <= 0) {
+            window.location.href = 'gameover.html';
+        }
     }
     messageEl.textContent = message;
 }
@@ -121,20 +158,36 @@ function stand() {
     }
     dealerSumEl.textContent = `Dealer's Sum: ${dealerSum}`;
 
-    // Determine winner
+    // Determine winner and money payout
     message = dealerSum > 21 ? "Dealer Busts, You Win!!" :
               dealerSum > sum ? "Dealer Win!!" :
-              dealerSum < sum ? "You Win!!" : "Push!";
+              dealerSum < sum ? "You Win!!" : "Push!!";
     
-    if (message.includes("You Win")) updateWinTally('player');
-    if (message.includes("Dealer Win")) updateWinTally('dealer');
+    if (message.includes("You Win")) {
+        playerMoney += currentBet * 2;  // Win pays 2x
+    } else if (message === "Push!!") {
+        playerMoney += currentBet;  // Return original bet on push
+    } else {
+        // Check if player is out of money
+        if (playerMoney <= 0) {
+            window.location.href = 'gameover.html';
+        }
+    }
     
+    updateMoneyDisplay();
     messageEl.textContent = message;
 }
 
 function resetGame() {
+    // Check if player has money to continue
+    if (playerMoney <= 0) {
+        window.location.href = 'gameover.html';
+        return;
+    }
+
     [cards, dealerCards] = [[], []];
     [sum, dealerSum, hasBlackJack, isAlive] = [0, 0, false, false];
+    currentBet = 10;
     message = "";
 
     cardsEl.textContent = "Cards:";
@@ -144,8 +197,8 @@ function resetGame() {
     messageEl.textContent = "Want to start the game?";
 }
 
-function resetScore() {
-    [playerWins, dealerWins] = [0, 0];
-    document.getElementById("player-wins").textContent = playerWins;
-    document.getElementById("dealer-wins").textContent = dealerWins;
-}
+// Initialize money and bet display on page load
+window.onload = () => {
+    updateMoneyDisplay();
+    updateBetDisplay();
+};

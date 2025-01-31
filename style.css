@@ -30,6 +30,58 @@ p {
     color: rgba(0,0,0,0.8);
 }
 
+#money-el {
+    font-weight: bold;
+    color: black;  /* Changed from green to black */
+    font-size: 28px;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+    margin-bottom: 20px;
+}
+
+.bet-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+#bet-amount-el {
+    font-weight: bold;
+    color: black;  /* Changed from blue to black */
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+#bet-slider {
+    width: 80%;
+    -webkit-appearance: none;
+    background: rgba(0, 0, 0, 0.2);  /* Changed from white to black background */
+    outline: none;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+    border-radius: 10px;
+    height: 15px;
+}
+
+#bet-slider:hover {
+    opacity: 1;
+}
+
+#bet-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 25px;
+    height: 25px;
+    background: black;  /* Changed from blue to black */
+    cursor: pointer;
+    border-radius: 50%;
+    transition: background 0.2s;
+}
+
+#bet-slider::-webkit-slider-thumb:hover {
+    background: #333;  /* Slightly lighter black for hover effect */
+}
+
 .game-container {
     background-color: rgba(255, 255, 255, 0.2);
     border-radius: 20px;
@@ -42,6 +94,82 @@ p {
     position: relative;
     margin: 0 auto;
     margin-top: 100px;
+}
+
+#game-over-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.game-over-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: linear-gradient(135deg, #e6f2ff 0%, #b3d9ff 100%);
+    margin: 0;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.game-over-content {
+    background-color: white;
+    padding: 40px;
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: 0 15px 50px rgba(0,0,0,0.2);
+    max-width: 500px;
+    width: 90%;
+}
+
+.game-over-content h1 {
+    color: #e74c3c;  /* Bright red for "GAME OVER" */
+    font-size: 48px;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+}
+
+.game-over-content p {
+    color: #333;
+    font-size: 24px;
+    margin-bottom: 15px;
+}
+
+.game-over-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.game-over-buttons button {
+    padding: 12px 25px;
+    font-size: 18px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.game-over-buttons button:first-child {
+    background-color: #2ecc71;  /* Green for Add Money */
+    color: white;
+}
+
+.game-over-buttons button:last-child {
+    background-color: #3498db;  /* Blue for Main Menu */
+    color: white;
+}
+
+.game-over-buttons button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
 }
 
 #cards-el, #sum-el, #dealer-el, #dealer-sum-el {
@@ -76,53 +204,6 @@ p {
 #buttons button:hover, #start-btn:hover, #back-btn:hover {
     background-color: rgba(0,0,0,0.05);
     transform: scale(1.05);
-}
-
-#win-tally {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    display: flex;
-    align-items: center;
-    background-color: rgba(255, 255, 255, 0.2);
-    border-radius: 10px;
-    padding: 10px 15px;
-    backdrop-filter: blur(5px);
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    z-index: 20;
-}
-
-#win-tally p {
-    margin: 0 10px;
-    font-size: 18px;
-    color: rgba(0,0,0,0.7);
-    display: flex;
-    align-items: center;
-}
-
-#win-tally span {
-    font-weight: bold;
-    margin-left: 10px;
-    background-color: rgba(0,0,0,0.1);
-    padding: 5px 10px;
-    border-radius: 5px;
-    min-width: 30px;
-    text-align: center;
-}
-
-#win-tally button {
-    background-color: transparent;
-    border: 2px solid rgba(0,0,0,0.6);
-    color: rgba(0,0,0,0.8);
-    padding: 5px 10px;
-    border-radius: 5px;
-    margin-left: 15px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-#win-tally button:hover {
-    background-color: rgba(0,0,0,0.05);
 }
 
 #back-btn {
